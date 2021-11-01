@@ -3,13 +3,17 @@ const accountsSchema = require('./accounts-schema');
 
 async function checkAccountPayload(req, res, next) {
   try {
-    const validAccount = await accountsSchema.validate(
-      req.body
-    );
-    req.body = validAccount;
-    next();
+    if (typeof req.body.name !== 'string') {
+      next({ status: 400, message: "name of account must be a string"})
+    } else {
+      const validAccount = await accountsSchema.validate(
+        req.body
+      );
+      req.body = validAccount;
+      next();
+    }
   } catch (err) {
-    next(err);
+    next({ status: 400, message: err.message});
   }
 }
 
