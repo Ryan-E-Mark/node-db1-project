@@ -19,7 +19,7 @@ async function checkAccountNameUnique(req, res, next) {
     if (existingAccount) {
       next({ status: 400, message: "that name is taken"});
     } else {
-      const newAccount = await Accounts.create(req.body).trim();
+      const newAccount = await Accounts.create(req.body);
       req.newAccount = newAccount;
       next();
     }
