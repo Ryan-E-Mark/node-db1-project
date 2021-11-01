@@ -19,7 +19,7 @@ async function updateById(id, account) {
   const result = await db('accounts').where('id', id).update(account);
   console.log(result);
   const updatedAccount = await db('accounts').where('id', id)
-  return updatedAccount;
+  return updatedAccount[0];
 }
 
 async function deleteById(id) {
