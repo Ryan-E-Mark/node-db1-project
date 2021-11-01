@@ -14,7 +14,11 @@ async function checkAccountPayload(req, res, next) {
 }
 
 async function checkAccountNameUnique(req, res, next) {
-  // DO YOUR MAGIC
+  try {
+    const newAccount = await Accounts.create({ name: req.body.name, budget: req.body.budget })
+  } catch (err) {
+    next(err);
+  }
 }
 
 async function checkAccountId(req, res, next) {

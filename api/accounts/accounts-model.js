@@ -7,7 +7,7 @@ async function getAll() {
 
 async function getById(id) {
   const result = await db('accounts').where('id', id);
-  return result;
+  return result[0];
 }
 
 async function create(account) {
