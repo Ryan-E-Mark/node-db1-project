@@ -18,8 +18,14 @@ router.get('/:id', checkAccountId, async (req, res, next) => {
   res.status(200).json(req.account);
 })
 
-router.post('/', checkAccountPayload, checkAccountNameUnique, (req, res, next) => {
-  res.status(201).json(req.newAccount);
+router.post('/', checkAccountPayload, checkAccountNameUnique, async (req, res, next) => {
+  try {
+    const newAccount = await Accounts.create(req.body);
+    req.newAccount = await Accounts.getById(newAccount);
+    res.status(201).json(req.newAccount);
+  } catch (err) {
+    next(err);
+  }
 })
 
 router.put('/:id', checkAccountPayload, checkAccountId, checkAccountNameUnique, async (req, res, next) => {
@@ -45,7 +51,7 @@ router.delete('/:id', checkAccountId, async (req, res, next) => {
   }
 })
 
-router.use((err, req, res, next) => { // eslint-disable-line
+router.use((err, req, res, next) => { 
   res.status( err.status || 500).json({
     message: err.message,
     Prodmessage: "Something went terribly wrong!"

@@ -7,7 +7,7 @@ function checkAccountPayload(req, res, next) {
       error.message = 'name and budget are required';
     } else if (typeof name !== 'string') {
       error.message = 'name of account must be a string';
-    } else if (name.trim() < 3 || name.trim() > 100) {
+    } else if (name.trim().length < 3 || name.trim().length > 100) {
       error.message = 'name of account must be between 3 and 100';
     } else if (typeof budget !== 'number') {
       error.message = 'budget of account must be a number'
@@ -27,8 +27,6 @@ async function checkAccountNameUnique(req, res, next) {
     if (existingAccount) {
       next({ status: 400, message: "that name is taken"});
     } else {
-      const newAccount = await Accounts.create(req.body);
-      req.newAccount = await Accounts.getById(newAccount);
       next();
     }
   } catch (err) {
