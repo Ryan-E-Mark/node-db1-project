@@ -15,7 +15,14 @@ async function checkAccountPayload(req, res, next) {
 
 async function checkAccountNameUnique(req, res, next) {
   try {
-    const newAccount = await Accounts.create({ name: req.body.name, budget: req.body.budget })
+    const existingAccount = await Accounts.getByName(req.body.name);
+    if (existingAccount) {
+      next({ status: 400, message: "that name is taken"});
+    } else {
+      const newAccount = await Accounts.create(req.body).trim();
+      req.newAccount = newAccount;
+      next();
+    }
   } catch (err) {
     next(err);
   }

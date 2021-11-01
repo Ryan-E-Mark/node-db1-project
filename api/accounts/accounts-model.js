@@ -25,10 +25,16 @@ async function deleteById(id) {
   return result;
 }
 
+async function getByName(name) {
+  const result = await db('accounts').where('name', name).first();
+  return result;
+}
+
 module.exports = {
   getAll,
   getById,
   create,
   updateById,
   deleteById,
+  getByName,
 }
