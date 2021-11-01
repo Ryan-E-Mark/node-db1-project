@@ -20,7 +20,7 @@ async function checkAccountNameUnique(req, res, next) {
       next({ status: 400, message: "that name is taken"});
     } else {
       const newAccount = await Accounts.create(req.body);
-      req.newAccount = newAccount;
+      req.newAccount = await Accounts.getById(newAccount);
       next();
     }
   } catch (err) {
@@ -32,7 +32,7 @@ async function checkAccountId(req, res, next) {
   try {
     const potentialAccount = await Accounts.getById(req.params.id);
     if (!potentialAccount) {
-      next({ status: 404, message: `Cannot find account at id ${req.params.id}`})
+      next({ status: 404, message: "account not found"})
     } else {
       req.account = potentialAccount;
       next();

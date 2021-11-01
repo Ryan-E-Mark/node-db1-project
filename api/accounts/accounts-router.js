@@ -22,15 +22,20 @@ router.post('/', checkAccountPayload, checkAccountNameUnique, (req, res, next) =
   res.status(201).json(req.newAccount);
 })
 
-router.put('/:id', (req, res, next) => {
-  // DO YOUR MAGIC
+router.put('/:id', checkAccountPayload, checkAccountId, checkAccountNameUnique, async (req, res, next) => {
+  try {
+    const updatedAccount = await Accounts.updateById(req.params.id, req.body);
+    res.status(200).json(updatedAccount);
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.delete('/:id', checkAccountId, async (req, res, next) => {
   try {
     const potentialAccount = await Accounts.getById(req.params.id);
     if (!potentialAccount) {
-      next({ status: 404, message: "account not found"})
+      next({ status: 404, message: "account not found"});
     } else {
       const deletedAccount = await Accounts.deleteById(req.params.id);
       res.status(200).json({ message: "Deleted account successfully"});
