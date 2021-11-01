@@ -1,20 +1,24 @@
 const Accounts = require('./accounts-model');
-const accountsSchema = require('./accounts-schema');
 
-async function checkAccountPayload(req, res, next) {
-  try {
-    if (typeof req.body.name !== 'string') {
-      next({ status: 400, message: "name of account must be a string"})
+function checkAccountPayload(req, res, next) {
+    const error = { status: 400 };
+    const { name, budget } = req.body;
+    if (name === undefined || budget === undefined) {
+      error.message = 'name and budget are required';
+    } else if (typeof name !== 'string') {
+      error.message = 'name of account must be a string';
+    } else if (name.trim() < 3 || name.trim() > 100) {
+      error.message = 'name of account must be between 3 and 100';
+    } else if (typeof budget !== 'number') {
+      error.message = 'budget of account must be a number'
+    } else if (budget < 0 || budget > 1000000) {
+      error.message = 'budget of account is too large or too small';
+    }
+    if (error.message) {
+      next(error);
     } else {
-      const validAccount = await accountsSchema.validate(
-        req.body
-      );
-      req.body = validAccount;
       next();
     }
-  } catch (err) {
-    next({ status: 400, message: err.message});
-  }
 }
 
 async function checkAccountNameUnique(req, res, next) {
